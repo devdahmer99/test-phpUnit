@@ -1,0 +1,3 @@
+Alura\Leilao\Tests\Service\Avaliador
+ [ ] Avaliador deve encontrar o maior valor de lances
+

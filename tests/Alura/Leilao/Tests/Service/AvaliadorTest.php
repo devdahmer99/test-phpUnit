@@ -10,68 +10,104 @@ use PHPUnit\Framework\TestCase;
 
 class AvaliadorTest extends TestCase
 {
-    public function testAvaliador()
+    private $leiloeiro;
+
+    protected function setUp(): void
     {
-        $leilao = new Leilao('Fiat 147 0KM');
+        $this->leiloeiro =  new Avaliador();
+    }
 
-        $maria = new Usuario('Maria');
-        $joao = new Usuario('João');
 
-        $leilao->recebeLance(new Lance($joao, 2000));
-        $leilao->recebeLance(new Lance($maria, 2500));
+    public function testAvaliadorDeveEncontrarOMaiorValorDeLances(Leilao $leilao)
+    {
+        // Act - When
+        $this->leiloeiro->avalia($leilao);
 
-        $leiloeiro = new Avaliador();
+        $maiorValor = $this->leiloeiro->getMaiorValor();
 
-// Act - When
-        $leiloeiro->avalia($leilao);
-
-        $maiorValor = $leiloeiro->getMaiorValor();
-
-// Assert - Then
+        // Assert - Then
         self::assertEquals(2500, $maiorValor);
     }
 
+    /**
+     * @dataProvider leilaoEmOrdemAleatoria
+     * @dataProvider leilaoEmOrdemCrescente
+     * @dataProvider leilaoEmOrdemDecrescente
+     */
+    public function testAvaliadorDeveEncontrarOMenorValorDeLances(Leilao $leilao)
+    {
+        // Act - When
+        $this->leiloeiro->avalia($leilao);
 
-    public function testAvaliadorDescrescente()
+        $menorValor = $this->leiloeiro->getMenorValor();
+
+        // Assert - Then
+        self::assertEquals(1700, $menorValor);
+    }
+
+    /**
+     * @dataProvider leilaoEmOrdemAleatoria
+     * @dataProvider leilaoEmOrdemCrescente
+     * @dataProvider leilaoEmOrdemDecrescente
+     */
+    public function testAvaliadorDeveBuscar3MaioresValores(Leilao $leilao)
+    {
+        $this->leiloeiro->avalia($leilao);
+
+        $maiores = $this->leiloeiro->getMaioresLances();
+        static::assertCount(3, $maiores);
+        static::assertEquals(2500, $maiores[0]->getValor());
+        static::assertEquals(2000, $maiores[1]->getValor());
+        static::assertEquals(1700, $maiores[2]->getValor());
+    }
+
+                    /* ---- DADOS ---- */
+
+    public function leilaoEmOrdemCrescente(): array
     {
         $leilao = new Leilao('Fiat 147 0KM');
 
         $maria = new Usuario('Maria');
         $joao = new Usuario('João');
+        $ana = new Usuario('ana');
 
-        $leilao->recebeLance(new Lance($maria, 2500));
-        $leilao->recebeLance(new Lance($joao, 2000));
+        $leilao->recebeLance(new Lance($joao, 1700));
+        $leilao->recebeLance(new Lance($maria, 1500));
+        $leilao->recebeLance(new Lance($ana, 2500));
 
-        $leiloeiro = new Avaliador();
-
-// Act - When
-        $leiloeiro->avalia($leilao);
-
-        $maiorValor = $leiloeiro->getMaiorValor();
-
-// Assert - Then
-        self::assertEquals(2500, $maiorValor);
+        return [$leilao];
     }
 
 
-    public function testAvaliadorEncontraMenorValor()
+    public function leilaoEmOrdemDecrescente(): array
     {
         $leilao = new Leilao('Fiat 147 0KM');
 
         $maria = new Usuario('Maria');
         $joao = new Usuario('João');
+        $ana = new Usuario('ana');
 
-        $leilao->recebeLance(new Lance($maria, 2500));
-        $leilao->recebeLance(new Lance($joao, 2000));
+        $leilao->recebeLance(new Lance($joao, 2500));
+        $leilao->recebeLance(new Lance($maria, 1700));
+        $leilao->recebeLance(new Lance($ana, 1500));
 
-        $leiloeiro = new Avaliador();
-
-// Act - When
-        $leiloeiro->avalia($leilao);
-
-        $menorValor = $leiloeiro->getMenorValor();
-
-// Assert - Then
-        self::assertEquals(2000, $menorValor);
+        return [$leilao];
     }
+
+
+    public function leilaoEmOrdemAleatoria(): array
+    {
+        $leilao = new Leilao('Fiat 147 0KM');
+
+        $maria = new Usuario('Maria');
+        $joao = new Usuario('João');
+        $ana = new Usuario('ana');
+
+        $leilao->recebeLance(new Lance($maria, 1700));
+        $leilao->recebeLance(new Lance($joao, 2500));
+        $leilao->recebeLance(new Lance($ana, 1500));
+
+        return [$leilao];
+    }
+
 }
