@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Alura\Leilao\Tests\Model\Leilao
  [x] Leilao nao deve receber lances repetidos
  [x] Leilao nao deve aceitar mais de 5 lances por usuario
@@ -14,4 +15,8 @@ Alura\Leilao\Tests\Service\Avaliador
  [x] Avaliador deve buscar 3 maiores valores with data set "ordem-aleatoria"
  [x] Avaliador deve buscar 3 maiores valores with data set "ordem-crescente"
  [x] Avaliador deve buscar 3 maiores valores with data set "ordem-decrescente"
+=======
+Alura\Leilao\Tests\Service\Avaliador
+ [ ] Avaliador deve encontrar o maior valor de lances
+>>>>>>> origin/master
 
